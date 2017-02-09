@@ -1,89 +1,40 @@
 var cities = [];
 var citySize = 20;
-var openSet = [];
-var closedSet = [];
-var countSet = [];
-var current;
-var currentBestPath = [new City(-100, -100), new City(-100000, -100000)];
-var startx, starty, endx, endy;
-var first = true;
-var index = 0;
-var bestValue = 1000000;
-var best = undefined;
-
+var shortestPath = [];
+var order = [];
+var inputCities = [];
+var bf;
+var pathlength=0;
 function setup() {
     createCanvas(600, 600)
     strokeWeight(3);
-    for (var i = 0; i < 10; i++) {
-        cities.push(new City(floor(random(width - citySize)), floor(random(height - citySize))));
-    }
-    for (var i = 0; i < 10; i++) {
-        openSet.push(cities[i]);
-    }
-    countSet = openSet.slice();
-    closedSet.push(openSet[0]);
-    current = openSet[0];
-    rem(openSet, openSet[0]);
+    setUpInput();
+    var order = [];
+    bf = new bruteForce();
 }
 
 function draw() {
     background(51);
     stroke(100, 100, 100);
-    drawPath(currentBestPath);
-    stroke(255, 0, 100);
-    drawPath(closedSet);
     drawCities();
-
-    findNearestNeighbor();
-}
-
-function findNearestNeighbor() {
-    if (countSet.length > 0) {
-        if (openSet.length > 0) {
-            //for (var i = 0; i < openSet.length; i++) {
-            if (index < openSet.length) {
-                var d = dist(current.x, current.y, openSet[index].x, openSet[index].y);
-                if (d < bestValue) {
-                    bestValue = d;
-                    best = openSet[index];
-                }
-                index++;
-                return;
-            }
-            addCity(best);
-            index = 0;
-            best = undefined;
-            bestValue = 10000000;
-            if (openSet.length == 0) {
-                checkCurrentBest();
-            }
-        }
+    if (started) {
+        setupPreconditions();
+        shortestPath = bf.getShortestPath(order, cities);
+        pathlength = pathLength(shortestPath);
+        started = false;
     }
+    if (shortestPath != false)
+        drawPath(shortestPath);
 }
 
-function addCity(best) {
-    text(dist(current.x, current.y, best.x, best.y), best.x, best.y);
-    current = best;
-    closedSet.push(best);
-    rem(openSet, best);
-}
-
-function checkCurrentBest() {
-    if (pathLength(currentBestPath) > pathLength(closedSet)) {
-        currentBestPath = closedSet.slice();
-    }
-    openSet = closedSet.slice();
-    closedSet = [];
-    if (countSet.length > 0) {
-        closedSet.push(countSet[0]);
-        rem(openSet, countSet[0]);
-        rem(countSet, countSet[0]);
-    }
-}
-
-function drawCities() {
-    for (var i = 0; i < cities.length; i++) {
-        cities[i].show();
+function setupPreconditions() {
+    cities = [];
+    order = [];
+    for (var i = 0; i < numberOfCities; i++) {
+        var xPos = parseInt(inputx[i].value());
+        var yPos = parseInt(inputy[i].value());
+        cities.push(new City(xPos, yPos));
+        order[i] = i;
     }
 }
 
@@ -95,6 +46,18 @@ function pathLength(path) {
     return distance;
 }
 
+function drawCities() {
+    inputCities = [];
+    for (var i = 0; i < numberOfCities; i++) {
+        var xPos = parseInt(inputx[i].value());
+        var yPos = parseInt(inputy[i].value());
+        inputCities.push(new City(xPos, yPos));
+    }
+    for (var i = 0; i < inputCities.length; i++) {
+        inputCities[i].show();
+    }
+}
+
 function drawPath(path) {
     noFill();
     ellipse(path[0].x + citySize / 2, path[0].y + citySize / 2, 10, 10);
@@ -102,10 +65,20 @@ function drawPath(path) {
     for (var i = 0; i < path.length; i++) {
         vertex(path[i].x + citySize / 2, path[i].y + citySize / 2);
     }
+    vertex(path[0].x + citySize / 2, path[0].y + citySize / 2);
     endShape();
+
     fill(255, 255, 0);
+    drawOrientationVector(path);
 }
 
-function rem(array, item) {
-    array.splice(array.indexOf(item), 1);
+function drawOrientationVector(path){
+  var v = createVector((path[1].x + citySize / 2) - (path[0].x + citySize / 2), (path[1].y + citySize / 2) - (path[0].y + citySize / 2));
+  v.setMag(0.5 * v.mag());
+  applyMatrix();
+  translate(path[0].x + citySize / 2, path[0].y + citySize / 2);
+  stroke(255, 0, 0, 150);
+  line(0, 0, v.x, v.y);
+  stroke(255, 160, 0, 150);
+  resetMatrix();
 }
