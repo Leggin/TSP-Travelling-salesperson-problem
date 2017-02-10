@@ -23,13 +23,24 @@ function setUpInput() {
     }
     travelInput[0] = createInput(50);
     travelInput[1] = createInput(50);
+    travelInput[2] = createInput();
+    travelInput[3] = createInput();
+
     travelInput[0].position(width + 162, 395);
-    travelInput[1].position(width + 180, 434);
+    travelInput[1].position(width + 40, 434);
+    travelInput[2].position(width + 40, 460);
+    travelInput[3].position(width + 40, 482);
+
     travelInput[0].size(50, 20);
     travelInput[1].size(50, 20);
 
+    travelInput[0].changed(inputChangedEvent);
+    travelInput[1].changed(inputChangedEvent);
+
     travelInput[0].hide();
     travelInput[1].hide();
+    travelInput[2].hide();
+    travelInput[3].hide();
     mySelectEvent();
     setupButtons();
 }
@@ -51,7 +62,7 @@ function setupText() {
     timeWarning = createP("Dies kann einige Minuten dauern.");
     textTravel[0] = createP("Wenn 1 Kilometer ");
     textTravel[1] = createP(" Pixeln entspricht, befindet sich der Handlungsreisende bei einer geschwindigkeit von ");
-    textTravel[2] = createP("Km/h:");
+    textTravel[2] = createP("Km/h fuer die Strecke: ");
 
     textP.position(width + 20, 0)
     textX.position(width + 90, 40)
@@ -59,8 +70,8 @@ function setupText() {
     err.position(width + 40, 370);
     timeWarning.position(width + 160, 0);
     textTravel[0].position(width + 40, 380);
-    textTravel[1].position(width + 40, 400);
-    textTravel[2].position(width + 240, 420);
+    textTravel[1].position(width + 220, 380);
+    textTravel[2].position(width +100, 420);
 
     err.style("color", "#ff0000");
 
@@ -69,6 +80,10 @@ function setupText() {
     textTravel[0].hide();
     textTravel[1].hide();
     textTravel[2].hide();
+}
+
+function inputChangedEvent() {
+    calculateRoute();
 }
 
 function setupSelector() {
@@ -105,7 +120,7 @@ function startButtonclickEvent() {
             return;
         }
 
-    }calculateRoute();
+    }
 }
 
 function calculateRoute() {
@@ -114,9 +129,14 @@ function calculateRoute() {
     textTravel[2].show();
     travelInput[0].show();
     travelInput[1].show();
-    var dista = pathlength * parseInt(travelInput[0]) /parseInt(travelInput[1]);
-    print(dista);
-    textTravel[3] = createP(dista);
+    travelInput[2].show();
+    travelInput[3].show();
+    var dis = (pathlength / parseInt(travelInput[0].value()));
+
+    var time = int(60 * ((dis / parseInt(travelInput[1].value()))));
+
+    travelInput[2].value(int(dis) + " Km");
+    travelInput[3].value(time + " Minuten");
 }
 
 function mySelectEvent() {

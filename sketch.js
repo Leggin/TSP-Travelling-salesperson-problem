@@ -22,9 +22,11 @@ function draw() {
         shortestPath = bf.getShortestPath(order, cities);
         pathlength = pathLength(shortestPath);
         started = false;
+        calculateRoute();
     }
     if (shortestPath != false)
         drawPath(shortestPath);
+
 }
 
 function setupPreconditions() {
