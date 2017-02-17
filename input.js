@@ -89,7 +89,6 @@ function inputChangedEvent() {
 function setupSelector() {
     sel = createSelect();
     sel.position(width + 120, 16);
-    sel.option('3');
     sel.option('4');
     sel.option('5');
     sel.option('6');

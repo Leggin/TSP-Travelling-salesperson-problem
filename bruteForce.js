@@ -41,7 +41,6 @@ function bruteForce(lexOrder, cities) {
             }
         }
         swap(this.order, largestX, largestY);
-
         var endArray = this.order.splice(largestX + 1);
         endArray.reverse();
         this.order = this.order.concat(endArray);
@@ -50,17 +49,9 @@ function bruteForce(lexOrder, cities) {
 
     function calcDistance(points, order) {
         var sum = 0;
-        for (var i = 0; i < order.length - 1; i++) {
-            var cityAIndex = order[i];
-            var cityA = points[cityAIndex];
-            var cityBIndex = order[i + 1];
-            var cityB = points[cityBIndex];
-            var d = dist(cityA.x, cityA.y, cityB.x, cityB.y);
-            sum += d;
+        for (var i = 0; i < order.length; i++) {
+            sum += dist(points[order[i]].x, points[order[i]].y, points[order[(i + 1) % order.length]].x, points[order[(i + 1) % order.length]].y)
         }
-        var first = points[order[0]];
-        var last = points[order[order.length-1]];
-        sum+=dist(first.x, first.y, last.x, last.y);
         return sum;
     }
 

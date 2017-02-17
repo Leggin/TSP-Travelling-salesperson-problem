@@ -42,9 +42,9 @@ function setupPreconditions() {
 
 function pathLength(path) {
     var distance = 0;
-    for (var i = 0; i < path.length - 1; i++) {
-        distance += dist(path[i].x, path[i].y, path[i + 1].x, path[i + 1].y);
-    }
+    for (var i = 0; i < path.length; i++) {
+        distance += dist(path[i].x, path[i].y, path[(i + 1)%path.length].x, path[(i + 1)%path.length].y);
+   }
     return distance;
 }
 
