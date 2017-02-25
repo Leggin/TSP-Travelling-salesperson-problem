@@ -4,7 +4,9 @@ var shortestPath = [];
 var order = [];
 var inputCities = [];
 var bf;
-var pathlength=0;
+var pathlength = 0;
+
+//setup canvas
 function setup() {
     createCanvas(600, 600)
     strokeWeight(3);
@@ -13,6 +15,7 @@ function setup() {
     bf = new bruteForce();
 }
 
+//is called every 1/60 s, draws the canvas elements
 function draw() {
     background(51);
     stroke(100, 100, 100);
@@ -28,7 +31,7 @@ function draw() {
         drawPath(shortestPath);
 
 }
-
+//setup city values when start button is pushed
 function setupPreconditions() {
     cities = [];
     order = [];
@@ -39,15 +42,22 @@ function setupPreconditions() {
         order[i] = i;
     }
 }
-
+//returns from the given order-index the citys index from the input cities array
+function getCityIndexOf(index) {
+    for (var i = 0; i < shortestPath.length; i++) {
+      if(shortestPath[index] == cities[i])
+        return i;
+    }
+}
+//returns the euclidean length of a given path
 function pathLength(path) {
     var distance = 0;
     for (var i = 0; i < path.length; i++) {
-        distance += dist(path[i].x, path[i].y, path[(i + 1)%path.length].x, path[(i + 1)%path.length].y);
-   }
+        distance += dist(path[i].x, path[i].y, path[(i + 1) % path.length].x, path[(i + 1) % path.length].y);
+    }
     return distance;
 }
-
+//draws the citites according to their x and y position
 function drawCities() {
     inputCities = [];
     for (var i = 0; i < numberOfCities; i++) {
@@ -59,7 +69,7 @@ function drawCities() {
         inputCities[i].show();
     }
 }
-
+//draws a given path as vertices, iterating the indeces from 0
 function drawPath(path) {
     noFill();
     ellipse(path[0].x + citySize / 2, path[0].y + citySize / 2, 10, 10);
@@ -73,14 +83,20 @@ function drawPath(path) {
     fill(255, 255, 0);
     drawOrientationVector(path);
 }
-
-function drawOrientationVector(path){
-  var v = createVector((path[1].x + citySize / 2) - (path[0].x + citySize / 2), (path[1].y + citySize / 2) - (path[0].y + citySize / 2));
-  v.setMag(0.5 * v.mag());
-  applyMatrix();
-  translate(path[0].x + citySize / 2, path[0].y + citySize / 2);
-  stroke(255, 0, 0, 150);
-  line(0, 0, v.x, v.y);
-  stroke(255, 160, 0, 150);
-  resetMatrix();
+//returns the euclidean distance between two given city indeces from an array
+function getDistanceOfCities(ary,indexA, indexB) {
+    return dist(ary[indexA].x, ary[indexA].y, ary[indexB].x, ary[indexB].y);
+}
+//draws the orientation vector from first city to second city 
+function drawOrientationVector(path) {
+    var v = createVector((path[1].x + citySize / 2) - (path[0].x + citySize / 2), (path[1].y + citySize / 2) - (path[0].y + citySize / 2));
+    v.setMag(0.5 * v.mag());
+    stroke(0, 0, 255, 150);
+    strokeWeight(2);
+    applyMatrix();
+    translate(path[0].x + citySize / 2, path[0].y + citySize / 2);
+    line(0, 0, v.x, v.y);
+    resetMatrix();
+    strokeWeight(3);
+    stroke(255, 160, 0, 150);
 }

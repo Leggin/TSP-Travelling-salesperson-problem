@@ -1,8 +1,21 @@
+/*Author: Nicolas Hilberg
+
+bruteForce calculates the shortest path from a given city array
+and a lexigographical order by iterating through every possible
+combination of ordering the cities.
+
+*/
+
 function bruteForce(lexOrder, cities) {
     this.order = [];
     this.cities = [];
     this.bestLex = [];
     this.distance;
+
+/*calculates the shortest path from a given city-array and order-array
+by calculating the euclidean distances for every path combination and keeping only the current best one
+*/
+
     this.getShortestPath = function(lexOrder, cities) {
         this.order = lexOrder.slice();
         this.cities = cities.slice();
@@ -24,6 +37,9 @@ function bruteForce(lexOrder, cities) {
         return bestCityOrder;
     }
 
+/*calculates the next order, returns true if it exists, returns false when there's no order left and
+  the algorithm is finished, i.e. it iterated over all possibilities
+*/
     this.nextOrder = function() {
         var largestX = -1;
         for (var i = 0; i < this.order.length - 1; i++) {
@@ -47,6 +63,8 @@ function bruteForce(lexOrder, cities) {
         return true;
     }
 
+/*returns the euclidean length of the path points, traversed in the given order
+*/
     function calcDistance(points, order) {
         var sum = 0;
         for (var i = 0; i < order.length; i++) {
@@ -54,7 +72,8 @@ function bruteForce(lexOrder, cities) {
         }
         return sum;
     }
-
+/*swaps two items i and j in an array a
+*/
     function swap(a, i, j) {
         var temp = a[i];
         a[i] = a[j];
